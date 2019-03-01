@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/michaelesmith/EmailParser.png?branch=master)](https://travis-ci.org/michaelesmith/EmailParser)
+[![Build Status](https://travis-ci.org/jfoucher/EmailParser.svg?branch=master)](https://travis-ci.org/jfoucher/EmailParser)
 
 README
 ======
