@@ -23,11 +23,9 @@ class PartTest extends TestCase
         $this->assertEquals($test_content, $p->getDecodedContent());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetDecodedContentException()
     {
+        $this->expectException(\RuntimeException::class);
         $p = new Part('This is a test', 'not an encoding', 'image/jpg', '');
         $p->getDecodedContent();
     }
