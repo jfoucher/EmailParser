@@ -28,7 +28,14 @@ class Parser
     {
         if (!is_array($this->parts['body'])) {
             if (preg_match('/(\<html|\<body)/', $this->parts['body'])) {
-                return $this->replaceInlineImages($this->parts['body']);
+                $p = new Part(
+                    $this->parts['body'],
+                    $this->getHeader('content-transfer-encoding') ? $this->getHeader('content-transfer-encoding') : null,
+                    $this->getHeader('content-type') ? $this->getHeader('content-type') : null,
+                    $this->getHeader('content-disposition') ? $this->getHeader('content-disposition') : null,
+                    null
+                );
+                return $this->replaceInlineImages($p->getDecodedContent());
             }
             return false;
         }
@@ -221,7 +228,7 @@ class Parser
         if($this->isMultipart($h)){
             $b = array();
             $bo = $this->getBound($h['content-type']);
-            $bod = explode('--'.$bo,trim($m[2]));
+            $bod = explode('--'.$bo, trim($m[2]));
 
             //figure out boundary end and pop the array if needed
             if(preg_match('`\-\-'.preg_quote($bo).'\-\-`',$m[2]))
@@ -237,7 +244,7 @@ class Parser
             $b = preg_replace('/\n\n$/sD','',$m[2]);
         }
 
-        return array("header" => $h,"body" => $b);
+        return array("header" => $h, "body" => $b);
     }
 
     private function getBound($ct){

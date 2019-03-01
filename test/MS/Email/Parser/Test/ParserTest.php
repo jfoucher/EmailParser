@@ -22,13 +22,13 @@ class ParserTest extends TestCase
         $this->assertEquals($fromAddress, $m->getFrom()->getAddress());
 
         $this->assertCount(count($toAddresses), $m->getTo());
-        foreach($toAddresses as $key => $toAddress){
+        foreach($toAddresses as $key => $toAddress) {
             $this->assertEquals($toAddress[0], $m->getTo()->get($key)->getName());
             $this->assertEquals($toAddress[1], $m->getTo()->get($key)->getAddress());
         }
 
         $this->assertCount(count($ccAddresses), $m->getCC());
-        foreach($ccAddresses as $key => $ccAddress){
+        foreach($ccAddresses as $key => $ccAddress) {
             $this->assertEquals($ccAddress[0], $m->getCC()->get($key)->getName());
             $this->assertEquals($ccAddress[1], $m->getCC()->get($key)->getAddress());
         }
