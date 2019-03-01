@@ -24,38 +24,98 @@ class Parser
         );
     }
 
-    protected function getHtml(){
-        if(!is_array($this->parts['body'])){
+    protected function getHtml()
+    {
+        if (!is_array($this->parts['body'])) {
+            if (preg_match('/(\<html|\<body)/', $this->parts['body'])) {
+                return $this->replaceInlineImages($this->parts['body']);
+            }
             return false;
         }
-        if($r = $this->searchByHeader('/content\-type/','/text\/html/')) {
-            return $r[0]->getDecodedContent();
+        if ($r = $this->searchByHeader('/content\-type/', '/text\/html/')) {
+            return $this->replaceInlineImages($r[0]->getDecodedContent());
         }
+
         return false;
     }
 
-    protected function getText(){
-        if(!is_array($this->parts['body'])) {
+
+
+    protected function replaceInlineImages($html)
+    {
+        $inlineImages = $this->getInlineImages();
+        $matches = array();
+        preg_match('/src=["\']?cid:([^"\'\s]+)["\']?/m', $html, $matches);
+        if (count($matches) > 0) {
+            $inline = $inlineImages[$matches[1]];
+            $html = preg_replace('/'.$matches[0].'/m', 'src="data:'.$inline->getMimeType().';charset=utf-8;base64,'.base64_encode($inline->getContent()).'"', $html);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @return Attachment[]|bool
+     */
+    protected function getInlineImages() {
+        if(!is_array($this->parts['body'])){
+            return false;
+        }
+        $inline = $this->searchByHeader('/content\-disposition/','/inline/');
+        $inline = $inline ? $inline : array();
+        $inlineObjects = array();
+        foreach($inline as $in){
+            /** @var \MS\Email\Parser\Part $in   */
+            $matches = array();
+            preg_match('/filename=([^;]*)/', $in->getDisposition(), $matches);
+            $filename = trim($matches[1], "\" \t\r\n\0\x0B");
+
+            $matches = array();
+            preg_match('/([^;]*)/', $in->getType(), $matches);
+            $mimeType = $matches[1];
+
+            $inlineObjects[$in->getId()] = new Attachment($filename, $in->getDecodedContent(), $mimeType);
+        }
+
+        return $inlineObjects;
+    }
+
+    protected function getText()
+    {
+        if (!is_array($this->parts['body'])) {
+            if (preg_match('/(\<html|\<body)/', $this->parts['body'])) {
+                return false;
+            }
             return $this->parts['body'];
         }
-        if($r = $this->searchByHeader('/content\-type/','/text\/plain/')) {
+        if ($r = $this->searchByHeader('/content\-type/', '/text\/plain/')) {
             return $r[0]->getDecodedContent();
         }
+
         return false;
     }
 
-    protected function getAttachments(){
-        if(!is_array($this->parts['body'])){
+
+    protected function getAttachments()
+    {
+        if (!is_array($this->parts['body'])) {
             return false;
         }
-        $attachments = $this->searchByHeader('/content\-disposition/','/attachment/');
+        $attachments = $this->searchByHeader('/content\-disposition/', '/attachment/');
         $attachments = $attachments ? $attachments : array();
 
         $attachmentObjects = array();
-        foreach($attachments as $attachment){
-            /** @var $attachment \MS\Email\Parser\Part  */
+        foreach ($attachments as $attachment) {
+            /** @var Part $attachment */
             $matches = array();
             preg_match('/filename=([^;]*)/', $attachment->getDisposition(), $matches);
+            if (!isset($matches[1])) {
+                // No match, try with utf-8 thing
+                preg_match('/filename\*=utf-8\'\'([^;]*)/', $attachment->getDisposition(), $matches);
+                if (!isset($matches[1])) {
+                    throw new InvalidAttachmentException('Attachement is invalid ' . $attachment->getDisposition());
+                }
+            }
             $filename = trim($matches[1], "\" \t\r\n\0\x0B");
 
             $matches = array();
@@ -99,6 +159,13 @@ class Parser
         return $this->parts;
     }
 
+    /**
+     * @param $_key
+     * @param $_val
+     * @param bool $_bd
+     *
+     * @return Part[]|bool
+     */
     protected function searchByHeader($_key,$_val,$_bd=false){
         if(!$_bd){
             $_bd = $this->parts['body'];
@@ -135,7 +202,8 @@ class Parser
                     $result['body'],
                     isset($result['header']['content-transfer-encoding']) ? $result['header']['content-transfer-encoding'] : null,
                     isset($result['header']['content-type']) ? $result['header']['content-type'] : null,
-                    isset($result['header']['content-disposition']) ? $result['header']['content-disposition'] : null
+                    isset($result['header']['content-disposition']) ? $result['header']['content-disposition'] : null,
+                    isset($result['header']['content-id']) ? str_replace(array('<', '>'), '',$result['header']['content-id']) : null
                 );
             }
         }
@@ -172,7 +240,7 @@ class Parser
             $b = preg_replace('/\n\n$/sD','',$m[2]);
         }
 
-        return array("header"=>$h,"body"=>$b);
+        return array("header" => $h,"body" => $b);
     }
 
     private function getBound($ct){

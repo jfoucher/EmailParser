@@ -15,12 +15,15 @@ class Part
 
     protected $content;
 
-    function __construct($content, $encoding, $type, $disposition)
+    protected $id;
+
+    function __construct($content, $encoding, $type, $disposition, $id)
     {
         $this->content = $content;
         $this->disposition = $disposition;
         $this->encoding = $encoding;
         $this->type = $type;
+        $this->id = $id;
     }
 
     public function getDecodedContent()
@@ -64,5 +67,8 @@ class Part
         return $this->type;
     }
 
-
+    public function getId()
+    {
+        return $this->id;
+    }
 }

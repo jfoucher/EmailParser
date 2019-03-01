@@ -240,4 +240,92 @@ Michael
         );
     }
 
+    public function testReplaceInlineImages()
+    {
+        $raw = <<<'EOF'
+To: test@test.com
+From: Jonathan Foucher <jfoucher@6px.eu>
+Subject: inline image test
+Message-ID: <2706f77f-fae2-39a1-f598-b2e8a9f8f68a@6px.eu>
+Date: Fri, 1 Mar 2019 11:57:56 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.5.1
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="------------87181B1275E41FD2CC8CC1B2"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------87181B1275E41FD2CC8CC1B2
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+icon
+
+-- 
+Jonathan Foucher
+https://jfoucher.com
+tel : 06 95 65 55 65
+
+
+--------------87181B1275E41FD2CC8CC1B2
+Content-Type: multipart/related;
+ boundary="------------D98DD8DB12EEC2C7AEA95CDA"
+
+
+--------------D98DD8DB12EEC2C7AEA95CDA
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <img moz-do-not-send="false"
+      src="cid:part1.63FD9C4A.14C35126@6px.eu" alt="icon" width="2"
+      height="2">
+    <pre class="moz-signature" cols="72">-- 
+Jonathan Foucher
+<a class="moz-txt-link-freetext" href="https://jfoucher.com">https://jfoucher.com</a>
+tel : 06 95 65 55 65</pre>
+  </body>
+</html>
+
+--------------D98DD8DB12EEC2C7AEA95CDA
+Content-Type: image/png;
+ name="favicon.png"
+Content-Transfer-Encoding: base64
+Content-ID: <part1.63FD9C4A.14C35126@6px.eu>
+Content-Disposition: inline;
+ filename="favicon.png"
+
+iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4AWPIX9IQMjOXoXBp
+U9TsQgApjgXsTr1mYQAAAABJRU5ErkJggg==
+--------------D98DD8DB12EEC2C7AEA95CDA--
+
+--------------87181B1275E41FD2CC8CC1B2--
+EOF;
+        $parser = new Parser();
+        $message = $parser->parse($raw);
+        $expected = <<<'EOF'
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <img moz-do-not-send="false"
+      src="data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4AWPIX9IQMjOXoXBpU9TsQgApjgXsTr1mYQAAAABJRU5ErkJggg==" alt="icon" width="2"
+      height="2">
+    <pre class="moz-signature" cols="72">-- 
+Jonathan Foucher
+<a class="moz-txt-link-freetext" href="https://jfoucher.com">https://jfoucher.com</a>
+tel : 06 95 65 55 65</pre>
+  </body>
+</html>
+EOF;
+        $this->assertEquals($expected, $message->getHtmlBody());
+    }
 }
