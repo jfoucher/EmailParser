@@ -19,7 +19,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/michaelesmith/EmailParser/issues"
+        "issues": "https://github.com/jfoucher/EmailParser/issues"
     },
     "require": {
         "php": ">=7.1",
