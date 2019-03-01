@@ -17,7 +17,7 @@ class Part
 
     protected $id;
 
-    function __construct($content, $encoding, $type, $disposition, $id)
+    function __construct($content, $encoding, $type, $disposition, $id = null)
     {
         $this->content = $content;
         $this->disposition = $disposition;
