@@ -133,9 +133,6 @@ class Parser
             $_head = $this->parts['header'];
         }
         foreach($_head as $k=>$v){
-            if($_key == $k && $k === 'subject') {
-                return quoted_printable_decode($v);
-            }
             if($_key == $k) {
                 return $v;
             }
