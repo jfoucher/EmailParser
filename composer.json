@@ -1,6 +1,6 @@
 {
     "name": "jfoucher/email-parser",
-    "version": "0.3",
+    "version": "0.3.2",
     "description": "Parse an email into an object representation",
     "keywords": ["email", "parse"],
     "homepage": "https://github.com/jfoucher/EmailParser",
