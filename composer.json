@@ -1,9 +1,9 @@
 {
-    "name": "michaelesmith/email-parser",
-    "version": "0.2",
+    "name": "jfoucher/email-parser",
+    "version": "0.3",
     "description": "Parse an email into an object representation",
     "keywords": ["email", "parse"],
-    "homepage": "https://github.com/michaelesmith/EmailParser",
+    "homepage": "https://github.com/jfoucher/EmailParser",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,6 +11,11 @@
             "name": "Michael Smith",
             "email": "sitecross@gmail.com",
             "homepage": "http://michaelsmithonline.blogspot.com/"
+        },
+        {
+            "name": "Jonathan Foucher",
+            "email": "jfoucher@gmail.com",
+            "homepage": "https://jfoucher.com/"
         }
     ],
     "support": {
