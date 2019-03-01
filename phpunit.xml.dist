@@ -3,7 +3,7 @@
          bootstrap="test/bootstrap.php"
         >
     <testsuites>
-        <testsuite name="msDateTime Test Suite">
+        <testsuite name="msEmailParser Test Suite">
             <directory>test/</directory>
         </testsuite>
     </testsuites>
