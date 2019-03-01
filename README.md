@@ -15,10 +15,10 @@ Installation
 
 ### Use Composer (*recommended*)
 
-The recommended way to install msDateTime is through composer.
+The recommended way to install msEmailParser is through composer.
 
 If you don't have Composer yet, download it following the instructions on
-http://getcomposer.org/ or just run the following command:
+[http://getcomposer.org/](http://getcomposer.org/) or just run the following command:
 
     curl -s http://getcomposer.org/installer | php
 
@@ -32,7 +32,7 @@ Just create a `composer.json` file for your project:
 }
 ```
 
-For more info on composer see https://github.com/composer/composer
+For more info on composer see [https://github.com/composer/composer](https://github.com/composer/composer)
 
 Examples
 --------
