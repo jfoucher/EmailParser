@@ -60,16 +60,21 @@ class Parser
         return $attachmentObjects;
     }
 
-    protected function getHeader($_key,$_head=false){
+    protected function getHeader($_key, $_head=false){
         if(!$_head) $_head = $this->parts['header'];
         foreach($_head as $k=>$v){
-            if($_key==$k) return $v;
+            if($_key == $k && $k === 'subject') {
+                return quoted_printable_decode($v);
+            }
+            if($_key == $k) {
+                return $v;
+            }
         }
         return false;
     }
 
     protected function searchHeader($_key,$_val){
-        if(empty($this->parts['header'])) throw new exception ('email header is not there');
+        if(empty($this->parts['header'])) throw new \Exception ('Email header is not there');
         foreach($this->parts['header'] as $k=>$v){
             if(preg_match($_key,$k) && preg_match($_val,$v))
                 return array('key'=>$k,'value'=>$v);
