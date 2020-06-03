@@ -71,7 +71,7 @@ class Message
 
     public function getDateAsDateTime()
     {
-        return \DateTime::createFromFormat('D, j M Y H:i:s O *', $this->date);
+        return \DateTime::createFromFormat('D, j M Y H:i:s O+', $this->date);
     }
 
     /**
