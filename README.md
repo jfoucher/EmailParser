@@ -37,7 +37,7 @@ For more info on composer see [https://github.com/composer/composer](https://git
 Examples
 --------
 
-###Basic
+### Basic
 
     $parser = new \MS\Email\Parser\Parser();
     $message = $parser->parse($email);
@@ -76,7 +76,7 @@ Examples
     // decoded attachment content
     $attachments[0]->getContent();
 
-###Encodings supported
+### Encodings supported
 
     * base64
     * quoted-printable
