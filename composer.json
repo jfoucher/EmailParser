@@ -22,7 +22,7 @@
         "issues": "https://github.com/jfoucher/EmailParser/issues"
     },
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
         "doctrine/collections": ">=1.5.0"
     },
     "autoload": {
